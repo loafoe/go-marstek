@@ -394,6 +394,26 @@ func (c *Client) SetDOD(value int) (*SetResult, error) {
 	return &result, nil
 }
 
+func (c *Client) SetGridExportLimit(limit int) (*SetResult, error) {
+	validLimits := []int{800, 1200, 1500, 2200, 2500}
+	valid := false
+	for _, v := range validLimits {
+		if limit == v {
+			valid = true
+			break
+		}
+	}
+	if !valid {
+		return nil, fmt.Errorf("grid export limit must be one of %v, got %d", validLimits, limit)
+	}
+	var result SetResult
+	params := map[string]int{"version": limit}
+	if err := c.call("Set.Ver", params, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 func (c *Client) SetBLEAdvertising(enable bool) (*SetResult, error) {
 	var result SetResult
 	enableVal := 0
